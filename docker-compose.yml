@@ -1,0 +1,84 @@
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: holyflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: holyflow
+      POSTGRES_USER: holyflow
+      POSTGRES_PASSWORD: holyflow123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - holyflow-network
+
+  # MinIO object storage
+  minio:
+    image: minio/minio
+    container_name: holyflow-minio
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: 014lq0tfcsm5s67gkwi1
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - holyflow-network
+
+  # Backend service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: holyflow-backend
+    restart: unless-stopped
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=holyflow
+      - DB_PASSWORD=wkwz2i0uqceuudguf4kh
+      - DB_NAME=holyflow
+      - S3_ENDPOINT=minio:9000
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=014lq0tfcsm5s67gkwi1
+      - S3_BUCKET=holyflow
+      - S3_REGION=us-east-1
+      - JWT_SECRET=7f3c9a2e1b6d4f8a0c5e9d3b7a1f6c2e8d4b0a9f5c3e7d1b6a8f2c4e9d0b7
+      - SMTP_HOST=
+      - SMTP_PORT=587
+      - SMTP_USERNAME=
+      - SMTP_PASSWORD=
+      - SMTP_FROM=noreply@holyflow.com
+     # - GITLAB_CLIENT_ID=
+     # - GITLAB_CLIENT_SECRET=gloas-
+     # - GITLAB_REDIRECT_URL=https://gitlab.vmtlw.ru/api/v1/auth/gitlab/callback
+     # - GITLAB_BASE_URL=https://gitlab.vmtlw.ru
+    depends_on:
+      - postgres
+      - minio
+    networks:
+      - holyflow-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: holyflow-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - holyflow-network
+    depends_on:
+      - backend
+
+networks:
+  holyflow-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  minio_data:

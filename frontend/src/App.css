@@ -1,0 +1,67 @@
+.song-card {
+  @apply text-left p-4;
+}
+
+.song-title {
+  @apply text-2xl font-bold mb-2 text-gray-800;
+}
+
+.song-author {
+  @apply text-lg text-gray-600 mb-4;
+}
+
+.song-text {
+  @apply whitespace-pre-wrap text-left font-mono bg-gray-50 p-4 rounded-md my-4;
+}
+
+.rhythm-pattern {
+  @apply font-mono bg-gray-100 p-3 rounded-md my-4;
+}
+
+.favorite-btn {
+  @apply bg-yellow-500 hover:bg-yellow-600 text-gray-900;
+}
+
+.audio-player {
+  @apply w-full my-4 rounded-lg overflow-hidden;
+}
+
+.audio-player audio {
+  @apply w-full;
+}
+
+.audio-player audio::-webkit-media-controls-panel {
+  @apply bg-gray-100;
+}
+
+.audio-player audio::-webkit-media-controls-play-button,
+.audio-player audio::-webkit-media-controls-volume-slider-container,
+.audio-player audio::-webkit-media-controls-volume-slider,
+.audio-player audio::-webkit-media-controls-seek-back-button,
+.audio-player audio::-webkit-media-controls-seek-forward-button,
+.audio-player audio::-webkit-media-controls-fullscreen-button,
+.audio-player audio::-webkit-media-controls-timeline-container,
+.audio-player audio::-webkit-media-controls-current-time-display,
+.audio-player audio::-webkit-media-controls-time-remaining-display,
+.audio-player audio::-webkit-media-controls-timeline,
+.audio-player audio::-webkit-media-controls-mute-button,
+.audio-player audio::-webkit-media-controls-toggle-closed-captions-button,
+.audio-player audio::-webkit-media-controls-download-button {
+  @apply bg-blue-500 text-white;
+}
+
+.song-list {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6;
+}
+
+.song-list-card {
+  @apply bg-white rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}
+
+.search-container {
+  @apply mb-6;
+}
+
+.search-input {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg text-base;
+}
