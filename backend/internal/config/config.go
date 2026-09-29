@@ -26,10 +26,10 @@ type Config struct {
 	SMTPPassword       string
 	SMTPFrom           string
 	JWTSecret          string
-	GitLabClientID     string
-	GitLabClientSecret string
-	GitLabRedirectURL  string
-	GitLabBaseURL      string
+	OIDCClientID     string
+	OIDCClientSecret string
+	OIDCRedirectURL  string
+	OIDCBaseURL      string
 }
 
 func LoadConfig() (*Config, error) {
@@ -54,10 +54,10 @@ func LoadConfig() (*Config, error) {
 		SMTPPassword:       getEnv("SMTP_PASSWORD", ""),
 		SMTPFrom:           getEnv("SMTP_FROM", ""),
 		JWTSecret:          getEnv("JWT_SECRET", "holyflow-secret-key"),
-		GitLabClientID:     getEnv("OIDC_CLIENT_ID", ""),
-		GitLabClientSecret: getEnv("OIDC_CLIENT_SECRET", ""),
-		GitLabRedirectURL:  getEnv("OIDC_REDIRECT_URL", ""),
-		GitLabBaseURL:      getEnv("OIDC_BASE_URL", "https://gitlab.com"),
+		OIDCClientID:     getEnv("OIDC_CLIENT_ID", ""),
+		OIDCClientSecret: getEnv("OIDC_CLIENT_SECRET", ""),
+		OIDCRedirectURL:  getEnv("OIDC_REDIRECT_URL", ""),
+		OIDCBaseURL:      getEnv("OIDC_BASE_URL", "https://gitlab.com"),
 	}
 
 	return cfg, nil

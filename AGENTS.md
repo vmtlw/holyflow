@@ -13,15 +13,15 @@ HolyFlow использует несколько агентов для выпо�
 **Функции**:
 - Регистрация новых пользователей
 - Аутентификация по логину/паролю
-- Интеграция с OIDC провайдерами (GitLab, GitHub и др.)
+- Интеграция с OIDC провайдерами (OIDC, GitHub и др.)
 - Восстановление пароля через email
 - Генерация и проверка JWT токенов
 
 **API Endpoints**:
 - `POST /auth/register` - Регистрация
 - `POST /auth/login` - Вход по логину/паролю
-- `POST /auth/oidc/login` - Начало OAuth через GitLab
-- `GET /auth/oidc/callback` - Callback от GitLab
+- `POST /auth/oidc/login` - Начало OAuth через OIDC
+- `GET /auth/oidc/callback` - Callback от OIDC
 - `POST /auth/forgot-password` - Восстановление пароля
 - `POST /auth/reset-password` - Сброс пароля
 

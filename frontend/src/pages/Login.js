@@ -30,8 +30,8 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  const handleGitLabLogin = () => {
-    // Redirect to GitLab OAuth
+  const handleOIDCLogin = () => {
+    // Redirect to OIDC OAuth
     window.location.href = `${api.defaults.baseURL}/auth/oidc/login`;
   };
 
@@ -68,8 +68,8 @@ const Login = ({ onLogin }) => {
       </form>
       
       <div style={{ marginTop: '20px' }}>
-        <button onClick={handleGitLabLogin} className="btn btn-secondary" style={{ marginRight: '10px' }}>
-          Войти через GitLab
+        <button onClick={handleOIDCLogin} className="btn btn-secondary" style={{ marginRight: '10px' }}>
+          Войти через OIDC
         </button>
       </div>
       

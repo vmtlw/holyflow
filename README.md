@@ -30,7 +30,7 @@ holyflow/
 - Stateless Golang приложение
 - Подключение к S3 для хранения mp3, обложек треков и аватарок профилей
 - Логика личного кабинета для сбора любимых треков
-- Аутентификация через логин/пароль и OIDC (GitLab)
+- Аутентификация через логин/пароль и OIDC 
 - Подключение к внешнему SMTP серверу для восстановления пароля и подтверждения регистрации
 - PostgreSQL в качестве базы данных
 
@@ -44,7 +44,7 @@ holyflow/
 
 - **Backend**: Golang, Gin, GORM, PostgreSQL, MinIO
 - **Frontend**: React, React Router, Axios
-- **Аутентификация**: JWT, OAuth2 (GitLab)
+- **Аутентификация**: JWT, OAuth2 (OIDC)
 - **Хранение файлов**: MinIO (S3 совместимое хранилище)
 
 ## Запуск приложения
@@ -89,17 +89,17 @@ Backend поддерживает следующие переменные окр�
 | `SMTP_USERNAME` | Пользователь SMTP | `` |
 | `SMTP_PASSWORD` | Пароль SMTP | `` |
 | `SMTP_FROM` | Адрес отправителя | `noreply@holyflow.com` |
-| `OIDC_CLIENT_ID` | Client ID для GitLab OIDC | `` |
-| `OIDC_CLIENT_SECRET` | Client Secret для GitLab OIDC | `` |
-| `OIDC_REDIRECT_URL` | URL перенаправления для GitLab OIDC | `http://localhost:8080/api/v1/auth/oidc/callback` |
+| `OIDC_CLIENT_ID` | Client ID для OIDC | `` |
+| `OIDC_CLIENT_SECRET` | Client Secret для OIDC | `` |
+| `OIDC_REDIRECT_URL` | URL перенаправления для OIDC | `http://localhost:8080/api/v1/auth/oidc/callback` |
 
 ## API Endpoints
 
 ### Аутентификация
 - `POST /api/v1/auth/register` - Регистрация нового пользователя
 - `POST /api/v1/auth/login` - Вход по логину/паролю
-- `POST /api/v1/auth/oidc/login` - Начало OAuth через GitLab
-- `GET /api/v1/auth/oidc/callback` - Callback от GitLab
+- `POST /api/v1/auth/oidc/login` - Начало OAuth через OIDC
+- `GET /api/v1/auth/oidc/callback` - Callback от OIDC
 - `POST /api/v1/auth/forgot-password` - Восстановление пароля
 - `POST /api/v1/auth/reset-password` - Сброс пароля
 

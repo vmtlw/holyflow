@@ -18,14 +18,14 @@ import (
 	"github.com/holyflow/backend/internal/models"
 )
 
-type GitLabUser struct {
+type OIDCUser struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Name     string `json:"name"`
 }
 
-type GitLabTokenResponse struct {
+type OIDCTokenResponse struct {
 	AccessToken  string `json:"access_token"`
 	TokenType    string `json:"token_type"`
 	ExpiresIn    int    `json:"expires_in"`
@@ -183,35 +183,35 @@ func (s *AuthService) ResetPassword(token, newPassword string) error {
 	return nil
 }
 
-func (s *AuthService) GetGitLabClientID() string {
+func (s *AuthService) GetOIDCClientID() string {
 	if s.cfg != nil {
-		return s.cfg.GitLabClientID
+		return s.cfg.OIDCClientID
 	}
 	return ""
 }
 
-func (s *AuthService) GetGitLabRedirectURL() string {
+func (s *AuthService) GetOIDCRedirectURL() string {
 	if s.cfg != nil {
-		return s.cfg.GitLabRedirectURL
+		return s.cfg.OIDCRedirectURL
 	}
 	return ""
 }
 
-func (s *AuthService) HandleGitLabCallback(code string) (*models.User, string, error) {
+func (s *AuthService) HandleOIDCCallback(code string) (*models.User, string, error) {
 	// Exchange code for access token
 	tokenResp, err := s.exchangeCodeForToken(code)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to exchange code for token: %w", err)
 	}
 
-	// Get user info from GitLab
-	oidcUser, err := s.getGitLabUserInfo(tokenResp.AccessToken)
+	// Get user info from OIDC
+	oidcUser, err := s.getOIDCUserInfo(tokenResp.AccessToken)
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to get GitLab user info: %w", err)
+		return nil, "", fmt.Errorf("failed to get OIDC user info: %w", err)
 	}
 
 	// Find or create user in our database
-	user, err := s.findOrCreateGitLabUser(oidcUser)
+	user, err := s.findOrCreateOIDCUser(oidcUser)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to find or create user: %w", err)
 	}
@@ -225,22 +225,22 @@ func (s *AuthService) HandleGitLabCallback(code string) (*models.User, string, e
 	return user, token, nil
 }
 
-func (s *AuthService) exchangeCodeForToken(code string) (*GitLabTokenResponse, error) {
+func (s *AuthService) exchangeCodeForToken(code string) (*OIDCTokenResponse, error) {
 	// Prepare request
 	data := url.Values{}
-	data.Set("client_id", s.GetGitLabClientID())
-	data.Set("client_secret", s.cfg.GitLabClientSecret)
+	data.Set("client_id", s.GetOIDCClientID())
+	data.Set("client_secret", s.cfg.OIDCClientSecret)
 	data.Set("code", code)
 	data.Set("grant_type", "authorization_code")
-	data.Set("redirect_uri", s.GetGitLabRedirectURL())
+	data.Set("redirect_uri", s.GetOIDCRedirectURL())
 
-	// Use GitLabBaseURL from configuration
-	tokenURL := fmt.Sprintf("%s/oauth/token", s.cfg.GitLabBaseURL)
+	// Use OIDCBaseURL from configuration
+	tokenURL := fmt.Sprintf("%s/oauth/token", s.cfg.OIDCBaseURL)
 
-	// Make request to GitLab
+	// Make request to OIDC
 	resp, err := http.PostForm(tokenURL, data)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make request to GitLab: %w", err)
+		return nil, fmt.Errorf("failed to make request to OIDC: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -252,11 +252,11 @@ func (s *AuthService) exchangeCodeForToken(code string) (*GitLabTokenResponse, e
 
 	// Check status code
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("GitLab returned status %d: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("OIDC returned status %d: %s", resp.StatusCode, string(body))
 	}
 
 	// Parse response
-	var tokenResp GitLabTokenResponse
+	var tokenResp OIDCTokenResponse
 	if err := json.Unmarshal(body, &tokenResp); err != nil {
 		return nil, fmt.Errorf("failed to parse token response: %w", err)
 	}
@@ -264,11 +264,11 @@ func (s *AuthService) exchangeCodeForToken(code string) (*GitLabTokenResponse, e
 	return &tokenResp, nil
 }
 
-func (s *AuthService) getGitLabUserInfo(accessToken string) (*GitLabUser, error) {
-	// Use GitLabBaseURL from configuration
-	apiURL := fmt.Sprintf("%s/api/v4/user", s.cfg.GitLabBaseURL)
+func (s *AuthService) getOIDCUserInfo(accessToken string) (*OIDCUser, error) {
+	// Use OIDCBaseURL from configuration
+	apiURL := fmt.Sprintf("%s/api/v4/user", s.cfg.OIDCBaseURL)
 
-	// Make request to GitLab API
+	// Make request to OIDC API
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
@@ -279,7 +279,7 @@ func (s *AuthService) getGitLabUserInfo(accessToken string) (*GitLabUser, error)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to make request to GitLab API: %w", err)
+		return nil, fmt.Errorf("failed to make request to OIDC API: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -291,11 +291,11 @@ func (s *AuthService) getGitLabUserInfo(accessToken string) (*GitLabUser, error)
 
 	// Check status code
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("GitLab API returned status %d: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("OIDC API returned status %d: %s", resp.StatusCode, string(body))
 	}
 
 	// Parse response
-	var oidcUser GitLabUser
+	var oidcUser OIDCUser
 	if err := json.Unmarshal(body, &oidcUser); err != nil {
 		return nil, fmt.Errorf("failed to parse user info: %w", err)
 	}
@@ -303,8 +303,8 @@ func (s *AuthService) getGitLabUserInfo(accessToken string) (*GitLabUser, error)
 	return &oidcUser, nil
 }
 
-func (s *AuthService) findOrCreateGitLabUser(oidcUser *GitLabUser) (*models.User, error) {
-	// Try to find existing user by GitLab ID or email
+func (s *AuthService) findOrCreateOIDCUser(oidcUser *OIDCUser) (*models.User, error) {
+	// Try to find existing user by OIDC ID or email
 	var user models.User
 	if err := s.db.Where("email = ?", oidcUser.Email).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -312,7 +312,7 @@ func (s *AuthService) findOrCreateGitLabUser(oidcUser *GitLabUser) (*models.User
 			user = models.User{
 				Username: oidcUser.Username,
 				Email:    oidcUser.Email,
-				// For GitLab users, we'll set a random password since they'll login via OAuth
+				// For OIDC users, we'll set a random password since they'll login via OAuth
 				PasswordHash: "", // Will be set to a random value
 			}
 

@@ -125,8 +125,8 @@ func (h *AuthHandler) ResetPassword(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "password reset successfully"})
 }
 
-func (h *AuthHandler) GitLabLogin(c *gin.Context) {
-	// Redirect to GitLab OAuth endpoint
+func (h *AuthHandler) OIDCLogin(c *gin.Context) {
+	// Redirect to OIDC OAuth endpoint
 	oauthState := uuid.New().String()
 
 	// Store state in session or temporary storage for validation in callback
@@ -134,15 +134,15 @@ func (h *AuthHandler) GitLabLogin(c *gin.Context) {
 
 	url := fmt.Sprintf(
 		"https://oidc.vmtlw.ru/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&state=%s&scope=read_user",
-		h.authService.GetGitLabClientID(),
-		h.authService.GetGitLabRedirectURL(),
+		h.authService.GetOIDCClientID(),
+		h.authService.GetOIDCRedirectURL(),
 		oauthState,
 	)
 
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
-func (h *AuthHandler) GitLabCallback(c *gin.Context) {
+func (h *AuthHandler) OIDCCallback(c *gin.Context) {
 	// Get code from query parameters
 	code := c.Query("code")
 	if code == "" {
@@ -150,10 +150,10 @@ func (h *AuthHandler) GitLabCallback(c *gin.Context) {
 		return
 	}
 
-	// Handle GitLab callback
-	user, token, err := h.authService.HandleGitLabCallback(code)
+	// Handle OIDC callback
+	user, token, err := h.authService.HandleOIDCCallback(code)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("failed to handle GitLab callback: %v", err)})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("failed to handle OIDC callback: %v", err)})
 		return
 	}
 

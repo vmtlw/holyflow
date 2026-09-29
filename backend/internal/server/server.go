@@ -102,8 +102,8 @@ func (s *Server) setupRouter(authHandler *handlers.AuthHandler, userHandler *han
 			auth.POST("/refresh", authHandler.RefreshToken)
 			auth.POST("/forgot-password", authHandler.ForgotPassword)
 			auth.POST("/reset-password", authHandler.ResetPassword)
-			auth.GET("/oidc/login", authHandler.GitLabLogin)
-			auth.GET("/oidc/callback", authHandler.GitLabCallback)
+			auth.GET("/oidc/login", authHandler.OIDCLogin)
+			auth.GET("/oidc/callback", authHandler.OIDCCallback)
 		}
 
 		// Public song routes
