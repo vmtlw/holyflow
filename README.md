@@ -89,17 +89,17 @@ Backend поддерживает следующие переменные окр�
 | `SMTP_USERNAME` | Пользователь SMTP | `` |
 | `SMTP_PASSWORD` | Пароль SMTP | `` |
 | `SMTP_FROM` | Адрес отправителя | `noreply@holyflow.com` |
-| `GITLAB_CLIENT_ID` | Client ID для GitLab OIDC | `` |
-| `GITLAB_CLIENT_SECRET` | Client Secret для GitLab OIDC | `` |
-| `GITLAB_REDIRECT_URL` | URL перенаправления для GitLab OIDC | `http://localhost:8080/api/v1/auth/gitlab/callback` |
+| `OIDC_CLIENT_ID` | Client ID для GitLab OIDC | `` |
+| `OIDC_CLIENT_SECRET` | Client Secret для GitLab OIDC | `` |
+| `OIDC_REDIRECT_URL` | URL перенаправления для GitLab OIDC | `http://localhost:8080/api/v1/auth/oidc/callback` |
 
 ## API Endpoints
 
 ### Аутентификация
 - `POST /api/v1/auth/register` - Регистрация нового пользователя
 - `POST /api/v1/auth/login` - Вход по логину/паролю
-- `POST /api/v1/auth/gitlab/login` - Начало OAuth через GitLab
-- `GET /api/v1/auth/gitlab/callback` - Callback от GitLab
+- `POST /api/v1/auth/oidc/login` - Начало OAuth через GitLab
+- `GET /api/v1/auth/oidc/callback` - Callback от GitLab
 - `POST /api/v1/auth/forgot-password` - Восстановление пароля
 - `POST /api/v1/auth/reset-password` - Сброс пароля
 

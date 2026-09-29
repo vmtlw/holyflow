@@ -20,8 +20,8 @@ HolyFlow использует несколько агентов для выпо�
 **API Endpoints**:
 - `POST /auth/register` - Регистрация
 - `POST /auth/login` - Вход по логину/паролю
-- `POST /auth/gitlab/login` - Начало OAuth через GitLab
-- `GET /auth/gitlab/callback` - Callback от GitLab
+- `POST /auth/oidc/login` - Начало OAuth через GitLab
+- `GET /auth/oidc/callback` - Callback от GitLab
 - `POST /auth/forgot-password` - Восстановление пароля
 - `POST /auth/reset-password` - Сброс пароля
 

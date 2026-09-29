@@ -205,13 +205,13 @@ func (s *AuthService) HandleGitLabCallback(code string) (*models.User, string, e
 	}
 
 	// Get user info from GitLab
-	gitlabUser, err := s.getGitLabUserInfo(tokenResp.AccessToken)
+	oidcUser, err := s.getGitLabUserInfo(tokenResp.AccessToken)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to get GitLab user info: %w", err)
 	}
 
 	// Find or create user in our database
-	user, err := s.findOrCreateGitLabUser(gitlabUser)
+	user, err := s.findOrCreateGitLabUser(oidcUser)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to find or create user: %w", err)
 	}
@@ -295,23 +295,23 @@ func (s *AuthService) getGitLabUserInfo(accessToken string) (*GitLabUser, error)
 	}
 
 	// Parse response
-	var gitlabUser GitLabUser
-	if err := json.Unmarshal(body, &gitlabUser); err != nil {
+	var oidcUser GitLabUser
+	if err := json.Unmarshal(body, &oidcUser); err != nil {
 		return nil, fmt.Errorf("failed to parse user info: %w", err)
 	}
 
-	return &gitlabUser, nil
+	return &oidcUser, nil
 }
 
-func (s *AuthService) findOrCreateGitLabUser(gitlabUser *GitLabUser) (*models.User, error) {
+func (s *AuthService) findOrCreateGitLabUser(oidcUser *GitLabUser) (*models.User, error) {
 	// Try to find existing user by GitLab ID or email
 	var user models.User
-	if err := s.db.Where("email = ?", gitlabUser.Email).First(&user).Error; err != nil {
+	if err := s.db.Where("email = ?", oidcUser.Email).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// User doesn't exist, create new one
 			user = models.User{
-				Username: gitlabUser.Username,
-				Email:    gitlabUser.Email,
+				Username: oidcUser.Username,
+				Email:    oidcUser.Email,
 				// For GitLab users, we'll set a random password since they'll login via OAuth
 				PasswordHash: "", // Will be set to a random value
 			}

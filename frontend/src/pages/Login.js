@@ -32,7 +32,7 @@ const Login = ({ onLogin }) => {
 
   const handleGitLabLogin = () => {
     // Redirect to GitLab OAuth
-    window.location.href = `${api.defaults.baseURL}/auth/gitlab/login`;
+    window.location.href = `${api.defaults.baseURL}/auth/oidc/login`;
   };
 
   return (

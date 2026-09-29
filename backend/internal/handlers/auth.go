@@ -133,7 +133,7 @@ func (h *AuthHandler) GitLabLogin(c *gin.Context) {
 	// For simplicity, we'll pass it as a parameter (not recommended for production)
 
 	url := fmt.Sprintf(
-		"https://gitlab.vmtlw.ru/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&state=%s&scope=read_user",
+		"https://oidc.vmtlw.ru/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code&state=%s&scope=read_user",
 		h.authService.GetGitLabClientID(),
 		h.authService.GetGitLabRedirectURL(),
 		oauthState,

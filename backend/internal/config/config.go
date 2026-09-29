@@ -54,10 +54,10 @@ func LoadConfig() (*Config, error) {
 		SMTPPassword:       getEnv("SMTP_PASSWORD", ""),
 		SMTPFrom:           getEnv("SMTP_FROM", ""),
 		JWTSecret:          getEnv("JWT_SECRET", "holyflow-secret-key"),
-		GitLabClientID:     getEnv("GITLAB_CLIENT_ID", ""),
-		GitLabClientSecret: getEnv("GITLAB_CLIENT_SECRET", ""),
-		GitLabRedirectURL:  getEnv("GITLAB_REDIRECT_URL", ""),
-		GitLabBaseURL:      getEnv("GITLAB_BASE_URL", "https://gitlab.com"),
+		GitLabClientID:     getEnv("OIDC_CLIENT_ID", ""),
+		GitLabClientSecret: getEnv("OIDC_CLIENT_SECRET", ""),
+		GitLabRedirectURL:  getEnv("OIDC_REDIRECT_URL", ""),
+		GitLabBaseURL:      getEnv("OIDC_BASE_URL", "https://gitlab.com"),
 	}
 
 	return cfg, nil
